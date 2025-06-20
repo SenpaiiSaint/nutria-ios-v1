@@ -59,7 +59,7 @@ export default function Landing() {
           <Button
             size="$4"
             bg="green"
-            onPress={() => router.replace('(tabs)/scan')}
+            onPress={() => router.replace('(tabs)/planner')}
           >
             <Text fontWeight="bold" color="white">
               Get Started

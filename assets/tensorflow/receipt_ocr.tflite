@@ -1,0 +1,5 @@
+// Option A: Standalone Function
+const model = await loadTensorflowModel(require('assets/my-model.tflite'))
+
+// Option B: Hook in a Function Component
+const plugin = useTensorflowModel(require('assets/my-model.tflite'))
