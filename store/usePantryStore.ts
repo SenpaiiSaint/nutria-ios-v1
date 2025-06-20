@@ -20,14 +20,17 @@ export const usePantryStore = create<PantryState>((set, get) => ({
   items: [],
   loading: true,
 
-  init: async () => {
-    try {
-      // Temporarily disabled database calls
-      set({ items: [], loading: false })
-    } catch (e) {
-      console.error(e)
-      set({ loading: false })
+  init: () => {
+    const loadItems = async () => {
+      try {
+        // Temporarily disabled database calls
+        set({ items: [], loading: false })
+      } catch (e) {
+        console.error(e)
+        set({ loading: false })
+      }
     }
+    loadItems()
   },
 
   addMany: async (newItems: PantryItem[]) => {
