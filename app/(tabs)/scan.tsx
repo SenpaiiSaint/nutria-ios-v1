@@ -1,9 +1,17 @@
 import { useCameraPermissions } from 'expo-camera'
 import { useRef, useState } from 'react'
 import { ActivityIndicator, Text, TouchableOpacity, View } from 'react-native'
-import { v4 as uuid } from 'uuid'
 import { runOCR } from '../../lib/ocr'
 import { usePantryStore } from '../../store/usePantryStore'
+
+// React Native compatible UUID generator
+const generateUUID = (): string => {
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+    const r = Math.random() * 16 | 0;
+    const v = c === 'x' ? r : (r & 0x3 | 0x8);
+    return v.toString(16);
+  });
+};
 
 export default function Scan() {
   const cameraRef = useRef<any>(null)
@@ -40,7 +48,7 @@ export default function Scan() {
 
       // Map SKUs to basic pantry items (temporary)
       const newItems = skus.map((sku) => ({
-        id: uuid(),
+        id: generateUUID(),
         name: `SKU ${sku}`,
         quantity: 1,
         unit: '',
