@@ -23,9 +23,12 @@ export default function MealCard({
       >
         <View style={styles.content}>
           <View style={styles.header}>
-            <Text style={styles.name}>
-              {meal.name}
-            </Text>
+            <View style={styles.titleSection}>
+              <Text style={styles.name}>
+                {meal.name}
+              </Text>
+              <Text style={styles.categoryBadge}>meal</Text>
+            </View>
             {isActive && (
               <View style={styles.dragIndicator}>
                 <Ionicons name="move" size={12} color="white" />
@@ -96,13 +99,23 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'center',
+    alignItems: 'flex-start',
+  },
+  titleSection: {
+    flex: 1,
+    gap: 4,
   },
   name: {
     fontSize: 14,
     fontWeight: '600',
     color: '#1e293b',
-    flex: 1,
+  },
+  categoryBadge: {
+    fontSize: 10,
+    color: '#888',
+    fontWeight: '500',
+    textTransform: 'uppercase',
+    letterSpacing: 0.5,
   },
   dragIndicator: {
     backgroundColor: '#0ea5e9',

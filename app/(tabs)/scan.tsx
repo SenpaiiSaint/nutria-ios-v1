@@ -1,19 +1,12 @@
 import { Ionicons } from '@expo/vector-icons'
 import { useCameraPermissions } from 'expo-camera'
 import { useRef, useState } from 'react'
-import { ActivityIndicator, View } from 'react-native'
-import { Button, Text, XStack, YStack } from 'tamagui'
+import { ActivityIndicator, Text, TouchableOpacity, View } from 'react-native'
+import uuid from 'react-native-uuid'
 import { runOCR } from '../../lib/ocr'
+import { fetchProductByBarcode } from '../../lib/openfoodfacts'
 import { usePantryStore } from '../../store/usePantryStore'
-
-// React Native compatible UUID generator
-const generateUUID = (): string => {
-  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-    const r = Math.random() * 16 | 0;
-    const v = c === 'x' ? r : (r & 0x3 | 0x8);
-    return v.toString(16);
-  });
-};
+import { PantryItem } from '../../types'
 
 export default function Scan() {
   const cameraRef = useRef<any>(null)
@@ -41,15 +34,15 @@ export default function Scan() {
           borderBottomWidth: 1,
           borderBottomColor: '#e2e8f0',
         }}>
-          <XStack style={{ justifyContent: 'space-between', alignItems: 'center' }}>
-            <YStack>
-              <Text fontSize="$8" fontWeight="800" color="#1e293b">
+          <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+            <View>
+              <Text style={{ fontSize: 28, fontWeight: '800', color: '#1e293b' }}>
                 Scan Receipt
               </Text>
-              <Text fontSize="$3" color="#64748b" style={{ marginTop: 4 }}>
+              <Text style={{ fontSize: 14, color: '#64748b', marginTop: 4 }}>
                 Camera access required
               </Text>
-            </YStack>
+            </View>
             <View style={{
               backgroundColor: '#22c55e',
               borderRadius: 20,
@@ -57,48 +50,48 @@ export default function Scan() {
             }}>
               <Ionicons name="camera" size={24} color="white" />
             </View>
-          </XStack>
+          </View>
         </View>
 
         {/* Permission Request */}
-        <YStack flex={1} style={{ justifyContent: 'center', alignItems: 'center', padding: 24 }} space="$6">
+        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', padding: 24 }}>
           <View style={{
             backgroundColor: '#f1f5f9',
             borderRadius: 40,
             padding: 20,
+            marginBottom: 24,
           }}>
             <Ionicons name="camera-outline" size={48} color="#94a3b8" />
           </View>
           
-          <YStack style={{ alignItems: 'center' }} space="$3">
-            <Text fontSize="$6" fontWeight="600" color="#1e293b" style={{ textAlign: 'center' }}>
+          <View style={{ alignItems: 'center', marginBottom: 32 }}>
+            <Text style={{ fontSize: 24, fontWeight: '600', color: '#1e293b', textAlign: 'center', marginBottom: 12 }}>
               Camera Permission Required
             </Text>
-            <Text fontSize="$3" color="#64748b" style={{ textAlign: 'center', lineHeight: 20 }}>
+            <Text style={{ fontSize: 16, color: '#64748b', textAlign: 'center', lineHeight: 24 }}>
               We need camera access to scan receipts and add items to your pantry
             </Text>
-          </YStack>
+          </View>
 
-          <Button
-            size="$5"
-            bg="#22c55e"
-            borderColor="#22c55e"
-            style={{ borderRadius: 12, paddingVertical: 16, paddingHorizontal: 32 }}
-            onPress={requestPermission}
-            pressStyle={{
-              bg: '#16a34a',
-              scale: 0.98,
+          <TouchableOpacity
+            style={{
+              backgroundColor: '#22c55e',
+              borderRadius: 12,
+              paddingVertical: 16,
+              paddingHorizontal: 32,
+              flexDirection: 'row',
+              alignItems: 'center',
+              gap: 8,
             }}
-            animation="quick"
+            onPress={requestPermission}
+            activeOpacity={0.8}
           >
-            <XStack space="$2" style={{ alignItems: 'center' }}>
-              <Ionicons name="camera" size={20} color="white" />
-              <Text fontWeight="600" color="white" fontSize="$4">
-                Grant Permission
-              </Text>
-            </XStack>
-          </Button>
-        </YStack>
+            <Ionicons name="camera" size={20} color="white" />
+            <Text style={{ fontWeight: '600', color: 'white', fontSize: 16 }}>
+              Grant Permission
+            </Text>
+          </TouchableOpacity>
+        </View>
       </View>
     )
   }
@@ -112,15 +105,29 @@ export default function Scan() {
       
       const skus = await runOCR(mockPhoto.uri)
 
-      // Map SKUs to basic pantry items (temporary)
-      const newItems = skus.map((sku) => ({
-        id: generateUUID(),
-        name: `SKU ${sku}`,
-        quantity: 1,
-        unit: '',
-      }))
-      addMany(newItems)
-      console.log('Added items:', newItems)
+      // Enrich SKUs with product data from OpenFoodFacts
+      const enriched: PantryItem[] = []
+
+      for (const code of skus) {
+        const base = {
+          id: uuid.v4().toString(),
+          quantity: 1,
+          unit: '',
+        }
+
+        // try OpenFoodFacts
+        const info = await fetchProductByBarcode(code)
+
+        enriched.push({
+          ...base,
+          name: info?.name || `SKU ${code}`,
+          category: info?.category || '',
+          macros: info?.macros || { protein: 0, carbs: 0, fat: 0 },
+        })
+      }
+
+      addMany(enriched)
+      console.log('Added enriched items:', enriched)
     } catch (err) {
       console.error(err)
     } finally {
@@ -137,15 +144,15 @@ export default function Scan() {
         paddingBottom: 20, 
         paddingHorizontal: 20,
       }}>
-        <XStack style={{ justifyContent: 'space-between', alignItems: 'center' }}>
-          <YStack>
-            <Text fontSize="$8" fontWeight="800" color="white">
+        <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+          <View>
+            <Text style={{ fontSize: 28, fontWeight: '800', color: 'white' }}>
               Scan Receipt
             </Text>
-            <Text fontSize="$3" color="rgba(255,255,255,0.7)" style={{ marginTop: 4 }}>
+            <Text style={{ fontSize: 14, color: 'rgba(255,255,255,0.7)', marginTop: 4 }}>
               Position receipt in frame
             </Text>
-          </YStack>
+          </View>
           <View style={{
             backgroundColor: '#22c55e',
             borderRadius: 20,
@@ -153,7 +160,7 @@ export default function Scan() {
           }}>
             <Ionicons name="camera" size={24} color="white" />
           </View>
-        </XStack>
+        </View>
       </View>
 
       {/* Camera Preview */}
@@ -169,15 +176,15 @@ export default function Scan() {
           alignItems: 'center',
           backgroundColor: 'rgba(34, 197, 94, 0.1)',
         }}>
-          <YStack style={{ alignItems: 'center' }} space="$3">
+          <View style={{ alignItems: 'center' }}>
             <Ionicons name="receipt-outline" size={48} color="#22c55e" />
-            <Text color="white" fontSize="$4" fontWeight="600">
+            <Text style={{ color: 'white', fontSize: 16, fontWeight: '600', marginTop: 12 }}>
               Camera Preview
             </Text>
-            <Text color="rgba(255,255,255,0.7)" fontSize="$2" style={{ textAlign: 'center' }}>
+            <Text style={{ color: 'rgba(255,255,255,0.7)', fontSize: 12, textAlign: 'center', marginTop: 8 }}>
               Camera component temporarily disabled
             </Text>
-          </YStack>
+          </View>
         </View>
       </View>
 
@@ -193,12 +200,12 @@ export default function Scan() {
           borderWidth: 1,
           borderColor: '#22c55e',
         }}>
-          <YStack style={{ alignItems: 'center' }} space="$2">
+          <View style={{ alignItems: 'center' }}>
             <ActivityIndicator size="large" color="#22c55e" />
-            <Text color="white" fontSize="$3" fontWeight="500">
+            <Text style={{ color: 'white', fontSize: 14, fontWeight: '500', marginTop: 8 }}>
               Processing receipt...
             </Text>
-          </YStack>
+          </View>
         </View>
       ) : (
         <View style={{
@@ -207,11 +214,9 @@ export default function Scan() {
           alignSelf: 'center',
           paddingHorizontal: 20,
         }}>
-          <Button
-            size="$6"
-            bg="#22c55e"
-            borderColor="#22c55e"
+          <TouchableOpacity
             style={{ 
+              backgroundColor: '#22c55e',
               borderRadius: 50, 
               paddingVertical: 20, 
               paddingHorizontal: 40,
@@ -220,21 +225,18 @@ export default function Scan() {
               shadowOpacity: 0.3,
               shadowRadius: 8,
               elevation: 8,
+              flexDirection: 'row',
+              alignItems: 'center',
+              gap: 8,
             }}
             onPress={handleSnap}
-            pressStyle={{
-              bg: '#16a34a',
-              scale: 0.95,
-            }}
-            animation="quick"
+            activeOpacity={0.8}
           >
-            <XStack space="$2" style={{ alignItems: 'center' }}>
-              <Ionicons name="camera" size={24} color="white" />
-              <Text fontWeight="700" color="white" fontSize="$4">
-                Capture
-              </Text>
-            </XStack>
-          </Button>
+            <Ionicons name="camera" size={24} color="white" />
+            <Text style={{ fontWeight: '700', color: 'white', fontSize: 16 }}>
+              Capture
+            </Text>
+          </TouchableOpacity>
         </View>
       )}
     </View>

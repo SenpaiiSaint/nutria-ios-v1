@@ -47,6 +47,15 @@ export default function TabsLayout() {
         }} 
       />
       <Tabs.Screen 
+        name="barcode" 
+        options={{ 
+          title: 'Barcode',
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="barcode-outline" size={size} color={color} />
+          ),
+        }} 
+      />
+      <Tabs.Screen 
         name="planner" 
         options={{ 
           title: 'Planner',

@@ -11,15 +11,23 @@
     "ios": {
       "supportsTablet": true,
       "assetBundlePatterns": [
+        "/**/*",
         "/**/*"
-      ]
+      ],
+      "bundleIdentifier": "com.mrmiyagi.nutriaios",
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false
+      }
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "edgeToEdgeEnabled": true
+      "edgeToEdgeEnabled": true,
+      "permissions": [
+        "android.permission.CAMERA"
+      ]
     },
     "web": {
       "bundler": "metro",
@@ -38,9 +46,12 @@
       [
         "expo-asset",
         {
-          "assets": ["./assets/images/home-bg.jpg"]
+          "assets": [
+            "./assets/images/home-bg.jpg"
+          ]
         }
-      ]
+      ],
+      "expo-barcode-scanner"
     ],
     "extra": {
       "router": {},
