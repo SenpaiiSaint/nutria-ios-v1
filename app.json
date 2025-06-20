@@ -9,7 +9,10 @@
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "assetBundlePatterns": [
+        "/**/*"
+      ]
     },
     "android": {
       "adaptiveIcon": {
@@ -28,15 +31,22 @@
       [
         "expo-splash-screen",
         {
-          "image": "./assets/images/splash-icon.png",
-          "imageWidth": 200,
           "resizeMode": "contain",
           "backgroundColor": "#ffffff"
         }
+      ],
+      [
+        "expo-asset",
+        {
+          "assets": ["./assets/images/home-bg.jpg"]
+        }
       ]
     ],
-    "experiments": {
-      "typedRoutes": true
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "73300302-16cb-43f9-9c69-1401a2bc73c3"
+      }
     }
   }
 }
