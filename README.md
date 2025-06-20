@@ -1,51 +1,100 @@
-# Welcome to your Expo app 👋
+# NutriTrack AI
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+A modern React Native app for tracking nutrition and reducing food waste through AI-powered receipt scanning.
 
-## Get started
+## Features
 
-1. Install dependencies
+- **Smart Receipt Scanning**: Use AI to automatically extract food items from receipts
+- **Pantry Management**: Track your food inventory with an intuitive interface
+- **Meal Planning**: Plan your nutrition with a drag-and-drop weekly planner
+- **Analytics**: Monitor your nutrition goals and food waste (coming soon)
 
-   ```bash
-   npm install
-   ```
+## UI/UX Improvements
 
-2. Start the app
+The app has been completely polished with modern design principles:
 
-   ```bash
-   npx expo start
-   ```
+### Design System
+- **Color Palette**: Consistent green theme (#22c55e) with proper contrast ratios
+- **Typography**: Clean, readable fonts with proper hierarchy
+- **Spacing**: Consistent 8px grid system for spacing
+- **Shadows**: Subtle shadows for depth and visual hierarchy
+- **Animations**: Smooth spring animations for better user feedback
 
-In the output, you'll find options to open the app in a
+### Components
+- **Tab Navigation**: Enhanced with icons and better styling
+- **Cards**: Consistent card design with proper shadows and borders
+- **Buttons**: Multiple variants (primary, secondary, outline) with proper states
+- **Headers**: Consistent header design across all screens
+- **Empty States**: Beautiful empty states with helpful messaging
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+### Screens
+- **Landing Page**: Engaging hero section with feature highlights
+- **Pantry**: Clean list view with swipe-to-delete functionality
+- **Scanner**: Professional camera interface with permission handling
+- **Planner**: Intuitive weekly calendar with drag-and-drop meals
+- **Stats**: Informative analytics preview with upcoming features
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+### Technical Improvements
+- **Tamagui Integration**: Full migration to Tamagui for better performance
+- **Type Safety**: Proper TypeScript integration throughout
+- **Responsive Design**: Works well across different screen sizes
+- **Accessibility**: Proper contrast ratios and touch targets
 
-## Get a fresh project
+## Tech Stack
 
-When you're ready, run:
+- **React Native** with Expo
+- **Tamagui** for UI components and theming
+- **Expo Router** for navigation
+- **Zustand** for state management
+- **TensorFlow Lite** for OCR
+- **Supabase** for backend
 
+## Getting Started
+
+1. Install dependencies:
 ```bash
-npm run reset-project
+npm install
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+2. Start the development server:
+```bash
+npm start
+```
 
-## Learn more
+3. Run on iOS or Android:
+```bash
+npm run ios
+# or
+npm run android
+```
 
-To learn more about developing your project with Expo, look at the following resources:
+## Project Structure
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+```
+nutria-ios/
+├── app/                 # Main app screens
+│   ├── (tabs)/         # Tab navigation screens
+│   ├── _layout.tsx     # Root layout
+│   └── index.tsx       # Landing page
+├── components/         # Reusable UI components
+├── store/             # State management
+├── lib/               # Utilities and services
+├── types/             # TypeScript type definitions
+└── assets/            # Images, fonts, and other assets
+```
 
-## Join the community
+## Contributing
 
-Join our community of developers creating universal apps.
+1. Follow the established design system
+2. Use Tamagui components when possible
+3. Maintain consistent spacing and typography
+4. Add proper TypeScript types
+5. Test on both iOS and Android
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
-`
+## Design Principles
+
+- **Consistency**: All components follow the same design patterns
+- **Accessibility**: Proper contrast ratios and touch targets
+- **Performance**: Optimized animations and efficient rendering
+- **User Experience**: Intuitive interactions and clear feedback
+- **Modern Aesthetics**: Clean, minimal design with subtle details
